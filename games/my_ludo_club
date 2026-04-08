@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>Covjece ne ljuti se</title>
+<style>
+:root{
+  --bg:#0b1220;
+  --panel:#121b2c;
+  --panel2:#1a2740;
+  --text:#edf2ff;
+  --muted:#b8c6e5;
+  --line:rgba(255,255,255,.08);
+  --white:#f8fafc;
+  --red:#ef4444;
+  --yellow:#facc15;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --shadow:0 18px 50px rgba(0,0,0,.32);
+  --safe:#f59e0b;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:radial-gradient(circle at top,#1e3a8a 0%,transparent 30%),linear-gradient(180deg,#0b1220,#0f172a 60%,#0b1220);color:var(--text);font-family:Inter,system-ui,Arial,sans-serif;touch-action:manipulation}
+body{min-height:100vh}
+.app{max-width:1100px;margin:0 auto;padding:12px;display:flex;flex-direction:column;gap:14px;align-items:center}
+.card{background:rgba(18,27,44,.9);border:1px solid var(--line);box-shadow:var(--shadow);border-radius:24px;backdrop-filter:blur(12px)}
+.board-wrap{padding:10px;width:min(98vw,780px)}
+.panel{padding:16px;display:flex;flex-direction:column;gap:14px;width:min(96vw,760px)}
+.board{width:min(96vw,760px);aspect-ratio:1/1;margin:0 auto;display:grid;grid-template-columns:repeat(15,1fr);grid-template-rows:repeat(15,1fr);gap:2px;padding:8px;border-radius:22px;background:rgba(255,255,255,.04)}
+.cell{position:relative;border-radius:10px;background:var(--white);border:1px solid rgba(15,23,42,.08);min-width:0;min-height:0;overflow:visible}
+.cell.void{background:transparent;border:none}
+.cell.path{background:#f8fafc}
+.cell.safe::after{content:"★";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;color:var(--safe);font-size:clamp(10px,1vw,16px)}
+.cell.red-lane{background:linear-gradient(135deg,#fee2e2,#f87171)}
+.cell.yellow-lane{background:linear-gradient(135deg,#fef9c3,#fde047)}
+.cell.green-lane{background:linear-gradient(135deg,#dcfce7,#4ade80)}
+.cell.blue-lane{background:linear-gradient(135deg,#dbeafe,#60a5fa)}
+.cell.red-home{background:linear-gradient(135deg,#7f1d1d,#ef4444)}
+.cell.yellow-home{background:linear-gradient(135deg,#a16207,#facc15)}
+.cell.green-home{background:linear-gradient(135deg,#166534,#22c55e)}
+.cell.blue-home{background:linear-gradient(135deg,#1e3a8a,#3b82f6)}
+.cell.center{background:conic-gradient(from 45deg,var(--yellow) 0 25%,var(--blue) 25% 50%,var(--green) 50% 75%,var(--red) 75% 100%);border-radius:14px}
+.cell.highlight{outline:3px solid #fb923c;outline-offset:-3px;box-shadow:0 0 0 3px rgba(251,146,60,.2),0 0 18px rgba(251,146,60,.4);cursor:pointer}
+.cell.start-mark{box-shadow:inset 0 0 0 2px rgba(15,23,42,.18)}
+.home-slot{position:absolute;inset:12%;border-radius:16px;border:1px dashed rgba(255,255,255,.35)}
+.piece-stack{position:absolute;inset:0;z-index:5}
+.piece{position:absolute;width:62%;height:62%;border-radius:999px;border:2px solid rgba(255,255,255,.96);box-shadow:0 8px 16px rgba(0,0,0,.24);transform:translate(-50%,-50%);transition:transform .18s ease,box-shadow .18s ease}
+.piece.red{background:radial-gradient(circle at 30% 30%,#fecaca,#ef4444 60%,#991b1b)}
+.piece.yellow{background:radial-gradient(circle at 30% 30%,#fef08a,#facc15 60%,#a16207)}
+.piece.green{background:radial-gradient(circle at 30% 30%,#bbf7d0,#22c55e 60%,#166534)}
+.piece.blue{background:radial-gradient(circle at 30% 30%,#bfdbfe,#3b82f6 60%,#1e40af)}
+.piece.clickable{cursor:pointer;box-shadow:0 0 0 4px rgba(251,146,60,.24),0 10px 18px rgba(0,0,0,.28)}
+.piece.clickable:active{transform:translate(-50%,-50%) scale(1.08)}
+.stack-1 .piece{left:50%;top:50%}
+.stack-2 .piece,.stack-3 .piece,.stack-4 .piece{width:40%;height:40%}
+.stack-2 .piece[data-stack-index="0"],.stack-3 .piece[data-stack-index="0"],.stack-4 .piece[data-stack-index="0"]{left:30%;top:30%}
+.stack-2 .piece[data-stack-index="1"],.stack-3 .piece[data-stack-index="1"],.stack-4 .piece[data-stack-index="1"]{left:70%;top:30%}
+.stack-3 .piece[data-stack-index="2"],.stack-4 .piece[data-stack-index="2"]{left:30%;top:70%}
+.stack-4 .piece[data-stack-index="3"]{left:70%;top:70%}
+.row{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.turn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;font-weight:800;background:rgba(239,68,68,.18)}
+.btn{border:none;border-radius:18px;padding:14px 18px;color:white;font-weight:800;font-size:1rem;cursor:pointer;transition:transform .18s ease,filter .18s ease}
+.btn:active{transform:scale(.98)}
+.btn:hover{filter:brightness(1.05)}
+.roll-btn{background:linear-gradient(135deg,#ef4444,#f97316);flex:1}
+.reset-btn{background:linear-gradient(135deg,#334155,#475569)}
+.btn:disabled{opacity:.55;cursor:not-allowed;filter:none;transform:none}
+.dice{width:74px;aspect-ratio:1/1;border-radius:20px;display:grid;place-items:center;background:linear-gradient(135deg,rgba(255,255,255,.18),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.12);font-size:2rem;font-weight:900}
+.dice.roll{animation:shake .55s ease}
+.panel-box{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.status{margin:0;color:var(--muted);line-height:1.45}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.small{font-size:.95rem;color:var(--muted)}
+.dot{width:12px;height:12px;border-radius:50%}
+.red-dot{background:var(--red)} .blue-dot{background:var(--blue)}
+.legend{display:flex;gap:8px;align-items:center;font-weight:700;margin-bottom:8px}
+.cell.hidden-cross{background:transparent!important;border:none!important}
+.cell.red-home,.cell.yellow-home,.cell.green-home,.cell.blue-home{
+  box-shadow:inset 0 0 0 2px rgba(255,255,255,.08),0 6px 14px rgba(0,0,0,.18);
+}
+.cell.red-home{background:linear-gradient(145deg,#b91c1c,#ef4444)}
+.cell.yellow-home{background:linear-gradient(145deg,#ca8a04,#facc15)}
+.cell.green-home{background:linear-gradient(145deg,#15803d,#22c55e)}
+.cell.blue-home{background:linear-gradient(145deg,#2563eb,#3b82f6)}
+.home-slot{inset:14%;border-radius:18px;border:1px dashed rgba(255,255,255,.28)}
+.controls-grid{display:grid;grid-template-columns:1.35fr .95fr auto;gap:12px;align-items:stretch}
+.roll-box,.stats-box,.reset-box{padding:14px;border-radius:18px;background:rgba(255,255,255,.04);border:1px solid var(--line)}
+.roll-box{display:flex;flex-direction:column;justify-content:center}
+.stats-box{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.reset-box{display:flex;align-items:center;justify-content:center}
+@media(max-width:760px){
+  .controls-grid{grid-template-columns:1fr}
+  .stats-box{grid-template-columns:1fr 1fr}
+}
+@media(max-width:560px){
+  .stats-box{grid-template-columns:1fr}
+}
+
+@keyframes shake{0%{transform:rotate(0) scale(1)}25%{transform:rotate(-14deg) scale(1.08)}50%{transform:rotate(14deg) scale(1.08)}75%{transform:rotate(-8deg) scale(1.04)}100%{transform:rotate(0) scale(1)}}
+
+@media(max-width:600px){.app{padding:8px}.board{width:min(98vw,98vh);padding:6px;gap:1px}.grid2{grid-template-columns:1fr}.dice{width:62px}.panel{padding:12px}.card{border-radius:20px}}
+</style>
+</head>
+<body>
+<div class="app">
+  <section class="card board-wrap">
+    <div id="board" class="board"></div>
+  </section>
+  <section class="card panel">
+    <div class="controls-grid">
+      <div class="roll-box">
+        <div id="turn" class="turn">Na redu: Crveni</div>
+        <div class="row" style="margin-top:12px">
+          <button id="rollBtn" class="btn roll-btn" type="button">Baci kocku</button>
+          <div id="dice" class="dice">?</div>
+        </div>
+        <p id="status" class="status" style="margin-top:12px">Baci kocku da počneš.</p>
+      </div>
+      <div class="stats-box">
+        <div class="panel-box">
+          <div class="legend"><span class="dot red-dot"></span>Crveni</div>
+          <div class="small">U bazi: <strong id="redBase">4/4</strong></div>
+          <div class="small">U cilju: <strong id="redDone">0/4</strong></div>
+        </div>
+        <div class="panel-box">
+          <div class="legend"><span class="dot blue-dot"></span>Plavi</div>
+          <div class="small">U bazi: <strong id="blueBase">4/4</strong></div>
+          <div class="small">U cilju: <strong id="blueDone">0/4</strong></div>
+        </div>
+      </div>
+      <div class="reset-box">
+        <button id="resetBtn" class="btn reset-btn" type="button">Restart</button>
+      </div>
+    </div>
+  </section>
+</div>
+<script>
+const PATH=[
+[6,1],[6,2],[6,3],[6,4],[6,5],[5,6],[4,6],[3,6],[2,6],[1,6],[0,6],[0,7],[0,8],
+[1,8],[2,8],[3,8],[4,8],[5,8],[6,9],[6,10],[6,11],[6,12],[6,13],[6,14],[7,14],
+[8,14],[8,13],[8,12],[8,11],[8,10],[8,9],[9,8],[10,8],[11,8],[12,8],[13,8],[14,8],
+[14,7],[14,6],[13,6],[12,6],[11,6],[10,6],[9,6],[8,5],[8,4],[8,3],[8,2],[8,1],[8,0],[7,0],[6,0]
+];
+const HOME_LANES={
+  red:[[7,1],[7,2],[7,3],[7,4],[7,5],[7,6]],
+  yellow:[[1,7],[2,7],[3,7],[4,7],[5,7],[6,7]],
+  blue:[[7,13],[7,12],[7,11],[7,10],[7,9],[7,8]],
+  green:[[13,7],[12,7],[11,7],[10,7],[9,7],[8,7]]
+};
+const BASES={
+  red:[[1,1],[1,3],[3,1],[3,3]],
+  yellow:[[1,11],[1,13],[3,11],[3,13]],
+  green:[[11,1],[11,3],[13,1],[13,3]],
+  blue:[[11,11],[11,13],[13,11],[13,13]]
+};
+const START_INDEX={red:0,yellow:13,blue:26,green:39};
+const SAFE_INDEXES=new Set([0,8,13,21,26,34,39,47]);
+const MAIN_PATH_LAST_PROGRESS=50;
+const HOME_ENTRY_PROGRESS=51;
+const FINISH_PROGRESS=56;
+const ACTIVE=['red','blue'];
+const COLOR_NAMES={red:'Crveni',blue:'Plavi',yellow:'Žuti',green:'Zeleni'};
+
+const board=document.getElementById('board');
+const turnEl=document.getElementById('turn');
+const diceEl=document.getElementById('dice');
+const statusEl=document.getElementById('status');
+const rollBtn=document.getElementById('rollBtn');
+const resetBtn=document.getElementById('resetBtn');
+
+let state;
+
+function makeState(){
+  return {
+    current:'red',
+    dice:null,
+    awaitingMove:false,
+    animating:false,
+    winner:null,
+    rng:{red:{noSix:0,last:0,consSix:0},blue:{noSix:0,last:0,consSix:0}},
+    players:{
+      red:{name:'Crveni',pieces:Array.from({length:4},()=>({progress:-1}))},
+      blue:{name:'Plavi',pieces:Array.from({length:4},()=>({progress:-1}))},
+      yellow:{name:'Žuti',pieces:Array.from({length:4},()=>({progress:-1,disabled:true}))},
+      green:{name:'Zeleni',pieces:Array.from({length:4},()=>({progress:-1,disabled:true}))}
+    }
+  };
+}
+
+function buildBoard(){
+  board.innerHTML='';
+  const pathMap=new Map(PATH.map((c,i)=>[c.join(','),i]));
+  const laneSets=Object.fromEntries(Object.entries(HOME_LANES).map(([k,v])=>[k,new Set(v.map(x=>x.join(',')))]));
+  for(let r=0;r<15;r++){
+    for(let c=0;c<15;c++){
+      const cell=document.createElement('div');
+      cell.className='cell';
+      cell.dataset.row=r;
+      cell.dataset.col=c;
+      const key=`${r},${c}`;
+      const inCross=(r>=6&&r<=8)||(c>=6&&c<=8);
+      const inAnyBase=Object.values(BASES).some(arr=>arr.some(([rr,cc])=>rr===r&&cc===c));
+      if(!inCross&&!inAnyBase) cell.classList.add('void');
+      else if(['6,6','6,8','8,6','8,8'].includes(key)) cell.classList.add('hidden-cross');
+      else if(key==='7,7') cell.classList.add('center');
+      else if(inCoords(BASES.red,[r,c])) cell.classList.add('red-home');
+      else if(inCoords(BASES.yellow,[r,c])) cell.classList.add('yellow-home');
+      else if(inCoords(BASES.green,[r,c])) cell.classList.add('green-home');
+      else if(inCoords(BASES.blue,[r,c])) cell.classList.add('blue-home');
+      else if(laneSets.red.has(key)) cell.classList.add('red-lane');
+      else if(laneSets.yellow.has(key)) cell.classList.add('yellow-lane');
+      else if(laneSets.green.has(key)) cell.classList.add('green-lane');
+      else if(laneSets.blue.has(key)) cell.classList.add('blue-lane');
+      else cell.classList.add('path');
+      if(pathMap.has(key)&&SAFE_INDEXES.has(pathMap.get(key))) cell.classList.add('safe');
+      if(pathMap.get(key)===START_INDEX.red||pathMap.get(key)===START_INDEX.blue) cell.classList.add('start-mark');
+      if(inAnyBase){
+        const slot=document.createElement('div');
+        slot.className='home-slot';
+        cell.appendChild(slot);
+      }
+      board.appendChild(cell);
+    }
+  }
+}
+
+function inCoords(list,target){return list.some(([r,c])=>r===target[0]&&c===target[1]);}
+function cellAt(coord){return board.querySelector(`.cell[data-row="${coord[0]}"][data-col="${coord[1]}"]`);}
+function countBase(color){return state.players[color].pieces.filter(p=>p.progress===-1).length;}
+function countDone(color){return state.players[color].pieces.filter(p=>p.progress===FINISH_PROGRESS).length;}
+function pieceCoord(color,index){
+  const p=state.players[color].pieces[index];
+  if(p.progress===-1)return BASES[color][index];
+  if(p.progress<=MAIN_PATH_LAST_PROGRESS)return PATH[(START_INDEX[color]+p.progress)%52];
+  if(p.progress<=FINISH_PROGRESS)return HOME_LANES[color][p.progress-HOME_ENTRY_PROGRESS];
+  return HOME_LANES[color][5];
+}
+function absIndex(color,progress){return (START_INDEX[color]+progress)%52;}
+function validMove(color,index,dice=state.dice){
+  if(dice==null)return false;
+  const p=state.players[color].pieces[index];
+  if(p.progress===FINISH_PROGRESS)return false;
+  if(p.progress===-1)return dice===6;
+  return p.progress+dice<=FINISH_PROGRESS;
+}
+function selectable(color,index){return state.awaitingMove&&!state.animating&&color===state.current&&validMove(color,index);}
+function validIndexes(color){return state.players[color].pieces.map((_,i)=>validMove(color,i)?i:null).filter(v=>v!==null);}
+
+function render(){
+  board.querySelectorAll('.piece-stack').forEach(x=>x.remove());
+  board.querySelectorAll('.highlight').forEach(x=>{x.classList.remove('highlight');x.onclick=null;});
+  const map=new Map();
+  ['red','yellow','green','blue'].forEach(color=>{
+    state.players[color].pieces.forEach((_,i)=>{
+      const coord=pieceCoord(color,i); const key=coord.join(',');
+      if(!map.has(key))map.set(key,[]);
+      map.get(key).push({color,index:i});
+    });
+  });
+  map.forEach((stack,key)=>{
+    const coord=key.split(',').map(Number); const cell=cellAt(coord); if(!cell)return;
+    const stackEl=document.createElement('div'); stackEl.className=`piece-stack stack-${Math.min(stack.length,4)}`;
+    const firstSelectable=stack.find(x=>selectable(x.color,x.index));
+    if(firstSelectable){
+      cell.classList.add('highlight');
+      cell.onclick=()=>movePiece(firstSelectable.color,firstSelectable.index);
+    }
+    stack.forEach((item,idx)=>{
+      const b=document.createElement('button');
+      b.type='button'; b.className=`piece ${item.color}`; b.dataset.stackIndex=idx;
+      if(selectable(item.color,item.index)){
+        b.classList.add('clickable');
+        b.addEventListener('pointerdown',e=>{e.preventDefault();e.stopPropagation();movePiece(item.color,item.index);});
+      } else {
+        b.disabled=true;
+      }
+      stackEl.appendChild(b);
+    });
+    cell.appendChild(stackEl);
+  });
+  updatePanel();
+}
+
+function updatePanel(){
+  turnEl.textContent=`Na redu: ${state.players[state.current].name}`;
+  turnEl.style.background=state.current==='red'?'rgba(239,68,68,.18)':'rgba(59,130,246,.18)';
+  diceEl.textContent=state.dice??'?';
+  document.getElementById('redBase').textContent=`${countBase('red')}/4`;
+  document.getElementById('blueBase').textContent=`${countBase('blue')}/4`;
+  document.getElementById('redDone').textContent=`${countDone('red')}/4`;
+  document.getElementById('blueDone').textContent=`${countDone('blue')}/4`;
+  rollBtn.disabled=state.awaitingMove||state.animating||!!state.winner;
+  if(state.winner){statusEl.textContent=`Pobjeda: ${state.players[state.winner].name}.`;return;}
+  if(state.animating){statusEl.textContent='Pomjeranje pijuna...';return;}
+  if(state.awaitingMove){
+    const v=validIndexes(state.current);
+    statusEl.textContent=v.length?`${state.players[state.current].name}, klikni označeni pijun ili njegovo polje.`:`${state.players[state.current].name} nema validan potez.`;
+    return;
+  }
+  statusEl.textContent=state.dice==null?'Baci kocku da počneš.':`${state.players[state.current].name} je bacio ${state.dice}.`;
+}
+
+function chooseDice(color){
+  const s=state.rng[color];
+  const weights={1:1,2:1,3:1,4:1,5:1,6:1};
+  if(countBase(color)===4)weights[6]+=0.18;
+  if(s.noSix>=5)weights[6]+=0.10;
+  if(s.consSix>=1)weights[6]-=0.10;
+  weights[6]=Math.max(.92,weights[6]);
+  const total=Object.values(weights).reduce((a,b)=>a+b,0);
+  let pick=Math.random()*total;
+  let value=6;
+  for(let i=1;i<=6;i++){pick-=weights[i];if(pick<=0){value=i;break;}}
+  if(value===6){s.noSix=0;s.consSix+=1;}else{s.noSix+=1;s.consSix=0;}
+  s.last=value;
+  return value;
+}
+
+function rollDice(){
+  if(state.awaitingMove||state.animating||state.winner)return;
+  rollBtn.disabled=true;
+  diceEl.classList.remove('roll'); void diceEl.offsetWidth; diceEl.classList.add('roll');
+  const value=chooseDice(state.current);
+  setTimeout(()=>{
+    state.dice=value;
+    state.awaitingMove=true;
+    render();
+    if(validIndexes(state.current).length===0)setTimeout(()=>endTurn(value===6),500);
+  },430);
+}
+
+async function movePiece(color,index){
+  if(!selectable(color,index))return;
+  const p=state.players[color].pieces[index];
+  const dice=state.dice; const extra=dice===6;
+  state.awaitingMove=false; state.animating=true; render();
+  if(p.progress===-1){p.progress=0; render(); await wait(220);} else {
+    for(let i=0;i<dice;i++){p.progress+=1; render(); await wait(160);}
+  }
+  capture(color,index);
+  render(); await wait(200);
+  if(countDone(color)===4){state.winner=color; state.dice=null; state.animating=false; render(); return;}
+  state.animating=false; state.dice=null; render();
+  setTimeout(()=>endTurn(extra),140);
+}
+
+function capture(color,index){
+  const p=state.players[color].pieces[index];
+  if(p.progress<0||p.progress>MAIN_PATH_LAST_PROGRESS)return;
+  const abs=absIndex(color,p.progress);
+  if(SAFE_INDEXES.has(abs))return;
+  ACTIVE.filter(c=>c!==color).forEach(enemy=>{
+    state.players[enemy].pieces.forEach(ep=>{
+      if(ep.progress<0||ep.progress>51)return;
+      if(absIndex(enemy,ep.progress)===abs)ep.progress=-1;
+    });
+  });
+}
+
+function endTurn(extra){
+  if(state.winner)return;
+  state.awaitingMove=false; state.animating=false; state.dice=null;
+  if(!extra)state.current=state.current==='red'?'blue':'red';
+  render();
+}
+function wait(ms){return new Promise(r=>setTimeout(r,ms));}
+function reset(){state=makeState();render();}
+
+rollBtn.addEventListener('pointerdown',e=>{e.preventDefault();rollDice();});
+resetBtn.addEventListener('pointerdown',e=>{e.preventDefault();reset();});
+buildBoard(); reset();
+</script>
+</body>
+</html>
