@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Nurkaje Personal Page</title>
+<style>
+*{
+ box-sizing:border-box;
+}
+html{
+ scroll-behavior:smooth;
+}
+body{
+ margin:0;
+ font-family:Inter,system-ui,Arial,sans-serif;
+ background:
+ radial-gradient(circle at top left,rgba(249,115,22,.16),transparent 30%),
+ radial-gradient(circle at top right,rgba(59,130,246,.14),transparent 28%),
+ linear-gradient(180deg,#0f172a,#111827 55%,#0b1220);
+ color:#fff;
+ overflow-x:hidden;
+}
+a{
+ color:inherit;
+ text-decoration:none;
+}
+.bg-blur{
+ position:fixed;
+ inset:0;
+ pointer-events:none;
+ overflow:hidden;
+ z-index:0;
+}
+.orb{
+ position:absolute;
+ border-radius:999px;
+ filter:blur(70px);
+ opacity:.32;
+ animation:float 10s ease-in-out infinite;
+}
+.orb1{
+ width:240px;
+ height:240px;
+ background:#f97316;
+ top:70px;
+ left:-40px;
+}
+.orb2{
+ width:280px;
+ height:280px;
+ background:#3b82f6;
+ top:180px;
+ right:-80px;
+ animation-delay:1.2s;
+}
+.orb3{
+ width:220px;
+ height:220px;
+ background:#22c55e;
+ bottom:40px;
+ left:20%;
+ animation-delay:2.4s;
+}
+@keyframes float{
+ 0%,100%{transform:translateY(0) translateX(0);}
+ 50%{transform:translateY(-18px) translateX(10px);}
+}
+.container{
+ width:min(1120px,92vw);
+ margin:0 auto;
+ position:relative;
+ z-index:1;
+}
+nav{
+ display:flex;
+ justify-content:space-between;
+ align-items:center;
+ padding:24px 0;
+ animation:fadeUp .8s ease both;
+}
+.logo{
+ font-weight:800;
+ letter-spacing:.5px;
+ font-size:1.05rem;
+}
+.nav-right{
+ display:flex;
+ gap:18px;
+ align-items:center;
+ color:rgba(255,255,255,.78);
+ font-size:.95rem;
+}
+.nav-pill{
+ padding:10px 14px;
+ border:1px solid rgba(255,255,255,.12);
+ background:rgba(255,255,255,.04);
+ border-radius:999px;
+ backdrop-filter:blur(10px);
+}
+.hero{
+ min-height:84vh;
+ display:grid;
+ grid-template-columns:1.1fr .9fr;
+ gap:30px;
+ align-items:center;
+ padding:20px 0 40px;
+}
+.hero-left{
+ animation:fadeUp .9s ease .08s both;
+}
+.eyebrow{
+ display:inline-flex;
+ align-items:center;
+ gap:8px;
+ padding:10px 14px;
+ border-radius:999px;
+ background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.1);
+ color:rgba(255,255,255,.82);
+ font-size:.92rem;
+ margin-bottom:18px;
+ backdrop-filter:blur(8px);
+}
+.eyebrow-dot{
+ width:9px;
+ height:9px;
+ border-radius:50%;
+ background:#22c55e;
+ box-shadow:0 0 14px #22c55e;
+}
+h1{
+ margin:0 0 14px;
+ font-size:clamp(2.7rem,7vw,5.2rem);
+ line-height:.98;
+ letter-spacing:-1.6px;
+}
+.gradient-text{
+ background:linear-gradient(90deg,#fff,#cbd5e1 50%,#f97316 100%);
+ -webkit-background-clip:text;
+ -webkit-text-fill-color:transparent;
+ background-clip:text;
+}
+.subtitle{
+ max-width:620px;
+ font-size:1.08rem;
+ line-height:1.7;
+ color:rgba(255,255,255,.74);
+ margin-bottom:28px;
+}
+.cta-row{
+ display:flex;
+ flex-wrap:wrap;
+ gap:14px;
+ margin-bottom:24px;
+}
+.btn{
+ display:inline-flex;
+ align-items:center;
+ justify-content:center;
+ gap:10px;
+ padding:14px 22px;
+ border-radius:16px;
+ font-weight:700;
+ transition:transform .18s ease,box-shadow .18s ease,background .18s ease,border-color .18s ease;
+}
+.btn:hover{
+ transform:translateY(-2px);
+}
+.btn-primary{
+ background:linear-gradient(135deg,#f97316,#ea580c);
+ color:#fff;
+ box-shadow:0 14px 30px rgba(249,115,22,.24);
+}
+.btn-primary:hover{
+ box-shadow:0 18px 36px rgba(249,115,22,.3);
+}
+.btn-secondary{
+ background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.12);
+ color:#fff;
+}
+.quick-stats{
+ display:flex;
+ flex-wrap:wrap;
+ gap:12px;
+ margin-top:8px;
+}
+.stat{
+ padding:12px 16px;
+ border-radius:16px;
+ background:rgba(255,255,255,.045);
+ border:1px solid rgba(255,255,255,.08);
+ min-width:120px;
+ backdrop-filter:blur(8px);
+}
+.stat strong{
+ display:block;
+ font-size:1.1rem;
+ margin-bottom:3px;
+}
+.stat span{
+ color:rgba(255,255,255,.68);
+ font-size:.92rem;
+}
+.hero-right{
+ animation:fadeUp .95s ease .16s both;
+}
+.showcase{
+ position:relative;
+ padding:22px;
+ border-radius:28px;
+ background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));
+ border:1px solid rgba(255,255,255,.12);
+ box-shadow:0 20px 50px rgba(0,0,0,.28);
+ backdrop-filter:blur(16px);
+}
+.window-bar{
+ display:flex;
+ gap:8px;
+ margin-bottom:18px;
+}
+.window-dot{
+ width:11px;
+ height:11px;
+ border-radius:50%;
+ background:rgba(255,255,255,.28);
+}
+.preview{
+ border-radius:22px;
+ overflow:hidden;
+ background:#0b1220;
+ border:1px solid rgba(255,255,255,.08);
+ padding:18px;
+}
+.preview-grid{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:10px;
+}
+.preview-card{
+ min-height:92px;
+ border-radius:18px;
+ background:linear-gradient(180deg,rgba(255,255,255,.08),rgba(255,255,255,.03));
+ border:1px solid rgba(255,255,255,.08);
+ padding:12px;
+ display:flex;
+ flex-direction:column;
+ justify-content:space-between;
+}
+.preview-card.big{
+ grid-column:span 2;
+ min-height:194px;
+}
+.line{
+ height:10px;
+ border-radius:999px;
+ background:rgba(255,255,255,.08);
+}
+.line.w70{width:70%;}
+.line.w55{width:55%;}
+.line.w40{width:40%;}
+.badge{
+ align-self:flex-start;
+ padding:8px 12px;
+ border-radius:999px;
+ background:rgba(249,115,22,.16);
+ color:#fdba74;
+ font-size:.85rem;
+ font-weight:700;
+}
+.section{
+ padding:34px 0 18px;
+}
+.section-title{
+ font-size:1.9rem;
+ margin:0 0 10px;
+}
+.section-sub{
+ color:rgba(255,255,255,.7);
+ line-height:1.7;
+ max-width:760px;
+ margin:0 0 22px;
+}
+.cards{
+ display:grid;
+ grid-template-columns:repeat(3,1fr);
+ gap:18px;
+}
+.card{
+ padding:22px;
+ border-radius:24px;
+ background:rgba(255,255,255,.045);
+ border:1px solid rgba(255,255,255,.08);
+ box-shadow:0 10px 28px rgba(0,0,0,.14);
+ transition:transform .18s ease,border-color .18s ease;
+}
+.card:hover{
+ transform:translateY(-4px);
+ border-color:rgba(249,115,22,.35);
+}
+.card-icon{
+ width:48px;
+ height:48px;
+ border-radius:14px;
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-size:1.35rem;
+ margin-bottom:14px;
+ background:linear-gradient(135deg,rgba(249,115,22,.24),rgba(59,130,246,.18));
+ border:1px solid rgba(255,255,255,.1);
+}
+.card h3{
+ margin:0 0 10px;
+ font-size:1.15rem;
+}
+.card p{
+ margin:0;
+ color:rgba(255,255,255,.68);
+ line-height:1.7;
+}
+.project-card{
+ display:grid;
+ grid-template-columns:1.2fr .8fr;
+ gap:18px;
+ padding:24px;
+ border-radius:28px;
+ background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.03));
+ border:1px solid rgba(255,255,255,.09);
+ box-shadow:0 16px 34px rgba(0,0,0,.2);
+}
+.project-card h3{
+ margin:0 0 12px;
+ font-size:1.5rem;
+}
+.project-card p{
+ margin:0 0 18px;
+ color:rgba(255,255,255,.72);
+ line-height:1.75;
+}
+.tags{
+ display:flex;
+ flex-wrap:wrap;
+ gap:10px;
+ margin-bottom:18px;
+}
+.tag{
+ padding:8px 12px;
+ border-radius:999px;
+ background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.08);
+ color:rgba(255,255,255,.82);
+ font-size:.9rem;
+}
+.mini-board{
+ display:grid;
+ grid-template-columns:repeat(4,1fr);
+ gap:10px;
+ align-self:stretch;
+}
+.mini-cell{
+ min-height:74px;
+ border-radius:18px;
+ background:rgba(255,255,255,.05);
+ border:1px solid rgba(255,255,255,.08);
+ display:flex;
+ align-items:center;
+ justify-content:center;
+ font-weight:800;
+ color:rgba(255,255,255,.78);
+}
+.mini-red{background:linear-gradient(135deg,rgba(239,68,68,.26),rgba(255,255,255,.05));}
+.mini-blue{background:linear-gradient(135deg,rgba(59,130,246,.24),rgba(255,255,255,.05));}
+.mini-yellow{background:linear-gradient(135deg,rgba(250,204,21,.24),rgba(255,255,255,.05));}
+.mini-green{background:linear-gradient(135deg,rgba(34,197,94,.24),rgba(255,255,255,.05));}
+footer{
+ padding:34px 0 26px;
+ color:rgba(255,255,255,.52);
+ font-size:.92rem;
+ text-align:center;
+}
+.reveal{
+ opacity:0;
+ transform:translateY(20px);
+ transition:opacity .65s ease,transform .65s ease;
+}
+.reveal.visible{
+ opacity:1;
+ transform:translateY(0);
+}
+@keyframes fadeUp{
+ from{
+  opacity:0;
+  transform:translateY(22px);
+ }
+ to{
+  opacity:1;
+  transform:translateY(0);
+ }
+}
+@media(max-width:920px){
+ .hero{
+  grid-template-columns:1fr;
+  min-height:auto;
+  padding-top:12px;
+ }
+ .cards{
+  grid-template-columns:1fr;
+ }
+ .project-card{
+  grid-template-columns:1fr;
+ }
+}
+@media(max-width:600px){
+ nav{
+  padding:18px 0;
+  flex-direction:column;
+  gap:12px;
+ }
+ .nav-right{
+  flex-wrap:wrap;
+  justify-content:center;
+ }
+ .cta-row{
+  flex-direction:column;
+  align-items:stretch;
+ }
+ .btn{
+  width:100%;
+ }
+ .quick-stats{
+  flex-direction:column;
+ }
+}
+</style>
+</head>
+<body>
+
+<div class="bg-blur">
+ <div class="orb orb1"></div>
+ <div class="orb orb2"></div>
+ <div class="orb orb3"></div>
+</div>
+
+<div class="container">
+ <nav>
+  <div class="logo">nurkaje</div>
+  <div class="nav-right">
+   <a href="#about" class="nav-pill">About me</a>
+   <a href="#projects" class="nav-pill">Projects</a>
+   <a href="games/my_ludo_club.html" class="nav-pill">My Ludo Club</a>
+  </div>
+ </nav>
+
+ <section class="hero">
+  <div class="hero-left">
+   <div class="eyebrow">
+    <span class="eyebrow-dot"></span>
+    Information technologies student • Technician of automation and robotics
+   </div>
+
+   <h1>
+    Hello, I'm<br>
+    <span class="gradient-text">Eldin Nurkić</span>
+   </h1>
+
+   <p class="subtitle">
+    I love making small projects, student applications and I loooove coming 
+    up with ideas which actually work.
+    Here, you can see projects I'm currently working on and also have fun by playing Ludo Club (on same phone at the moment)
+   </p>
+
+   <div class="cta-row">
+    <a href="games/my_ludo_club.html" class="btn btn-primary">Play Ludo Club🎲 </a>
+    <a href="#projects" class="btn btn-secondary">All projects</a>
+   </div>
+
+   <div class="quick-stats">
+    <div class="stat">
+     <strong>IPI Akademija Tuzla</strong>
+     <span>student</span>
+    </div>
+    <div class="stat">
+     <strong>Web + C,C++</strong>
+     <span>Projects</span>
+    </div>
+    <div class="stat">
+     <strong>GitHub Pages</strong>
+     <span>deploy</span>
+    </div>
+   </div>
+  </div>
+
+  <div class="hero-right">
+   <div class="showcase">
+    <div class="window-bar">
+     <div class="window-dot"></div>
+     <div class="window-dot"></div>
+     <div class="window-dot"></div>
+    </div>
+
+    <div class="preview">
+     <div class="preview-grid">
+      <div class="preview-card big">
+       <span class="badge">Active projects</span>
+       <div>
+        <div class="line w70"></div>
+        <div class="line w55" style="margin-top:12px"></div>
+       </div>
+      </div>
+      <div class="preview-card">
+       <div class="line w55"></div>
+       <div class="line w40"></div>
+      </div>
+      <div class="preview-card">
+       <div class="line w70"></div>
+       <div class="line w40"></div>
+      </div>
+      <div class="preview-card">
+       <div class="line w55"></div>
+       <div class="line w40"></div>
+      </div>
+      <div class="preview-card big">
+       <div class="line w70"></div>
+       <div class="line w55" style="margin-top:12px"></div>
+       <div class="line w40" style="margin-top:12px"></div>
+      </div>
+     </div>
+    </div>
+   </div>
+  </div>
+ </section>
+
+ <section id="about" class="section reveal">
+  <h2 class="section-title">O meni</h2>
+  <p class="section-sub">
+   Student sam na Internacionalnoj poslovno-informacionoj akademiji ( IPI Akademija ) u Tuzli. Najviše me zanimaju web aplikacije,
+   baze podataka, C++ projekti i praktične ideje koje se mogu pretvoriti u stvaran proizvod.
+   Volim da eksperimentišem sa UI dizajnom, logikom aplikacija i projektima koji izgledaju
+   jednostavno, ali iza sebe imaju solidnu funkcionalnost.
+
+   I am currently studying at IPI Akademija Tuzla. I looove developing web application and databases, 
+   but I don't run from C,C++ applications also. I enjoy experimenting with UI design, application logic and projects which look
+   simple and minimalistic.
+  </p>
+
+  <div class="cards">
+   <div class="card">
+    <div class="card-icon">💻</div>
+    <h3>Web development</h3>
+    <p>HTML,CSS,JavaScript and smaller full-stack ideas which can be hosted and used freely.</p>
+   </div>
+   <div class="card">
+    <div class="card-icon">🧠</div>
+    <h3>Problem solving</h3>
+    <p>I enjoy breaking problems into smaller sections and making solutions which are practical and clean.</p>
+   </div>
+   <div class="card">
+    <div class="card-icon">⚙️</div>
+    <h3>Projects</h3>
+    <p>From C,C++ projects to web applications and databases, I tend to keep projects functional and clean.</p>
+   </div>
+  </div>
+ </section>
+
+ <section id="projects" class="section reveal">
+  <h2 class="section-title">Look at these also</h2>
+  <p class="section-sub">
+   Currently, one of the most interesting projects is web version of Ludo Club, made for mobile
+   devices.
+  </p>
+
+  <div class="project-card">
+   <div>
+    <h3>My ludo club • Web game</h3>
+    <p>
+     Game meant to be played on web with mobile devices. Focus was on ease of use and game logic. 
+    </p>
+
+    <div class="tags">
+     <span class="tag">HTML</span>
+     <span class="tag">CSS</span>
+     <span class="tag">JavaScript</span>
+     <span class="tag">Mobile UI</span>
+    </div>
+
+    <a href="games/my_ludo_club.html" class="btn btn-primary">Open</a>
+   </div>
+
+   <div class="mini-board">
+    <div class="mini-cell mini-red">L</div>
+    <div class="mini-cell">U</div>
+    <div class="mini-cell">D</div>
+    <div class="mini-cell mini-blue">O</div>
+    <div class="mini-cell">G</div>
+    <div class="mini-cell mini-yellow">A</div>
+    <div class="mini-cell mini-green">M</div>
+    <div class="mini-cell">E</div>
+   </div>
+  </div>
+ </section>
+
+ <footer>
+  © 2026 Eldin Nurkić • ALL RIGHTS RESERVED
+ </footer>
+</div>
+
+<script>
+const observer=new IntersectionObserver((entries)=>{
+ entries.forEach(entry=>{
+  if(entry.isIntersecting){
+   entry.target.classList.add('visible');
+  }
+ });
+},{threshold:.12});
+
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
