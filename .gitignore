@@ -1,0 +1,16 @@
+# Keep personal files and local configuration out of the public Git history
+*.pdf
+*.PDF
+*.doc
+*.docx
+*.DOC
+*.DOCX
+*.odt
+*.ODT
+.env
+.env.*
+private/
+**/private/
+.DS_Store
+Thumbs.db
+node_modules/

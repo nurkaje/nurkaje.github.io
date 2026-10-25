@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b1220">
+  <title>Ludo Club — Čovječe ne ljuti se</title>
+  <link rel="stylesheet" href="ludo-club/style.css">
+  <script src="ludo-club/game.js" defer></script>
+</head>
+<body>
+  <main class="app">
+    <div class="topline"><a href="../index.html#projects">← Portfolio</a><span>LUDO CLUB / LOCAL TWO-PLAYER GAME</span></div>
+    <section class="card board-wrap" aria-label="Ludo game board"><div id="board" class="board"></div></section>
+    <section class="card panel" aria-label="Game controls">
+      <div class="controls-grid">
+        <div class="roll-box">
+          <div id="turn" class="turn">Na redu: Crveni</div>
+          <div class="row row-controls"><button id="rollBtn" class="btn roll-btn" type="button">Baci kocku</button><div id="dice" class="dice" aria-live="polite">?</div></div>
+          <p id="status" class="status" aria-live="polite">Baci kocku da počneš.</p>
+        </div>
+        <div class="stats-box">
+          <div class="panel-box"><div class="legend"><span class="dot red-dot"></span>Crveni</div><div class="small">U bazi: <strong id="redBase">4/4</strong></div><div class="small">U cilju: <strong id="redDone">0/4</strong></div></div>
+          <div class="panel-box"><div class="legend"><span class="dot blue-dot"></span>Plavi</div><div class="small">U bazi: <strong id="blueBase">4/4</strong></div><div class="small">U cilju: <strong id="blueDone">0/4</strong></div></div>
+        </div>
+        <div class="reset-box"><button id="resetBtn" class="btn reset-btn" type="button">Restart</button></div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
